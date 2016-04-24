@@ -1,7 +1,3 @@
-# TODO: Add comment
-# 
-# Author: pacha
-###############################################################################
 
 #The purpose of this project is to demonstrate your ability to collect, work with, and clean a data set.
 #The goal is to prepare tidy data that can be used for later analysis. 
@@ -28,7 +24,6 @@
 
 #preparing for downloads, load libraries
 library(httr)
-#library(data.table)
 library(plyr)
 # set working directory
 setwd("C:/Users/stuartspern/Documents/Downloads/Courses/Data Science/R_working_directory/Course3_Week4")
@@ -59,7 +54,6 @@ unzip(zipfile, list = FALSE, overwrite = TRUE, exdir = "./data" )
 
 #function to read txt and convert to data.frame (as opposed to a data.table) since # of records in a #table <10K 
 getdataframe <- function (filename,cols = NULL){
-	print(paste("Getting table:", filename))
 	f <- paste(datafolder,filename,sep="/")
 	df <- data.frame()
 	if(is.null(cols)){
@@ -75,7 +69,6 @@ features <- getdataframe("features.txt")
 
 #read data and build overall dataframe
 getmergeddataframe <- function(type, features){
-	print(paste("Getting data", type))
 	subject_data <- getdataframe(paste(type,"/","subject_",type,".txt",sep=""),"id")
 	y_data <- getdataframe(paste(type,"/","y_",type,".txt",sep=""),"activity")
 	x_data <- getdataframe(paste(type,"/","X_",type,".txt",sep=""),features$V2)
@@ -88,7 +81,6 @@ train <- getmergeddataframe("train", features)
 
 #function to save provided data in the indicated folder
 saveresults <- function (data,name){
-	print(paste("saving results", name))
 	file <- paste(resultsfolder, "/", name,".csv" ,sep="")
 	write.csv(data,file)
 }
@@ -108,7 +100,7 @@ saveresults(mean_and_std,"mean_and_std_dataset")
 activity_labels <- getdataframe("activity_labels.txt") # $V2 column lists the 6 different activities
 
 #4) Appropriately labels the data set with descriptive variable names. 
-Mergeddata$activity <- factor(Mergeddata$activity, levels=activity_labels$V1, labels=activity_labels$V2)
+mean_and_std$activity <- factor(mean_and_std$activity, levels=activity_labels$V1, labels=activity_labels$V2)
 
 #5) Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
 tidy_dataset <- ddply(mean_and_std, .(id, activity), .fun=function(x){ colMeans(x[,-c(1:2)]) })
